@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: project
+  name: python-ping-pong2
+  labels:
+    app: python-ping-pong2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-ping-pong2
+  template:
+    metadata:
+      labels:
+        app: python-ping-pong2
+    spec:
+      containers:
+      - name: python-ping-pong2
+        image: voldana/python_ping_pong2
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"  
+

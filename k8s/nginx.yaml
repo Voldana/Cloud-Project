@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx2-custom
+  namespace: project
+  labels:
+    app: nginx2-custom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx2-custom
+  template:
+    metadata:
+      labels:
+        app: nginx2-custom
+    spec:
+      containers:
+      - name: nginx2-custom
+        image: voldana/custom-nginx3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: data
+          mountPath: /opt/
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: nginx2-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-gateway
+  namespace: project
+spec:
+  selector:
+    app: nginx2-custom
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30008
