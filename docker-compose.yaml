@@ -14,26 +14,43 @@ services:
       - DB_network
 
   api:
-    image: voldana/python_ping_pong
-    container_name: python_ping_pong
+    build: ./python_image
+    container_name: python-ping-pong
     restart: always
     networks:
       - DB_network
     depends_on:
       - DB_postgresql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 50M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
   
   nginx:
-    image: voldana/custom_nginx
-    container_name: nginx_gateway
+    build: ./nginx_image
+    container_name: nginx-gateway
     restart: always
     ports:
       - "80:80"
+    volumes:
+    - ./nginx_image/data:/opt
     networks:
       - DB_network
     depends_on:
       - DB_postgresql
       - api
-    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 50M
+        reservations:
+          cpus: '0.25'
+          memory: 20M
     
 
 
